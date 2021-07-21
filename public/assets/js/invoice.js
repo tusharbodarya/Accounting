@@ -67,7 +67,7 @@ $("#productgroup").on("change", function () {
             var products = "";
             $.each(result, function (index, value) {
             products +=
-                "<option value=" + value.name + ">" + value.name + "</option>";
+                "<option value='" + value.name + "'>" + value.name + "</option>";
             });
             $(".product_name").append(products);
         },

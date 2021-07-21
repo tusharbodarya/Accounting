@@ -84,7 +84,7 @@
                                     <div class="col-sm-12">
                                         <h3 class="title">
                                             Bill To
-                                            <a href='add-accounts.php' class="btn btn-primary">Add Account</a>
+                                            <a href='/add-accounts' class="btn btn-primary">Add Account</a>
                                         </h3>
                                     </div>
                                 </div>

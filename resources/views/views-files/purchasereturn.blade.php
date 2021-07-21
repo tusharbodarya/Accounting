@@ -81,12 +81,13 @@
 				<tbody>
 						<?php $sr = 0; ?>
 						@foreach ($products as $p)
+						<?php $product = explode("-",$p['product_name']); ?>
 						<tr>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $sr += 1 }}</td>
-							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $p['product_name'] }}</td>
+							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $product[0] }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;"></td>
-							<td style="border-bottom: 2px solid;border-right: 2px solid;"></td>
-							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $p['product_qty'] }}</td>
+							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $product[1] }}</td>
+							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $product['product_qty'] }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ number_format((float)str_replace(',','',$p['product_price']),2) }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ number_format((float)str_replace(',','',$p['product_discount']),2) }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{  number_format((float)str_replace(',','',$p['texttaxa']),2) }}</td>

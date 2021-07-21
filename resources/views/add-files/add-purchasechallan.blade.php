@@ -84,7 +84,7 @@
                                     <div class="col-sm-12">
                                         <h3 class="title">
                                             Bill To
-                                            <a href='add-accounts.php' class="btn btn-danger">Add Account</a>
+                                            <a href='/add-accounts' class="btn btn-danger">Add Account</a>
                                         </h3>
                                     </div>
                                 </div>
@@ -125,7 +125,7 @@
                                         <div class="input-group">
                                             <div class="input-group-addon"><span class="icon-file-text-o"
                                                     aria-hidden="true"></span></div>
-                                            <input class="form-control" name="orderid" value="{{ $orderid }}" readonly>
+                                            <input class="form-control" name="orderid" value="{{ $orderid }}">
                                         </div>
                                     </div>
                                     <div class="col-sm-6"><label for="challanno" class="caption">Challan No </label>
