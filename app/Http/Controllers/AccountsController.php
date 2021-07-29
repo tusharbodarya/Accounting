@@ -247,13 +247,6 @@ class AccountsController extends Controller
         }
     }
 
-    function index_transaction(){
-        $transactions = Transaction::join('accounts as fromac', 'transactions.fromaccount', '=', 'fromac.id')
-        ->join('accounts as toac', 'transactions.toaccount', '=', 'toac.id')
-        ->select('transactions.*', 'fromac.name as fromac_name', 'toac.name as toac_name')->get();
-        return view('tbl-files/tbl-transactions')->with('transactions', $transactions);
-    }
-
     function transaction_view($id){
         $transaction = Transaction::leftJoin('accounts as fa', 'fa.id', '=', 'transactions.fromaccount')
         ->leftJoin('accounts as ta', 'ta.id', '=', 'transactions.toaccount')

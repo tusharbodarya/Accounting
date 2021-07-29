@@ -46,12 +46,12 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
-                <h4 class="mb-0 font-size-18">Add Purchase Challan</h4>
+                <h4 class="mb-0 font-size-18">Add Job Work Challan</h4>
 
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Purchases</a></li>
-                        <li class="breadcrumb-item active">Add Purchase Challan</li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Job Work</a></li>
+                        <li class="breadcrumb-item active">Add Job Work Challan</li>
                     </ol>
                 </div>
 
@@ -64,9 +64,7 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card card-shadow mb-4">
-                <form method="post" id="data_form" action="/purchasechallan_update/{{ $PurchaseChallan->id }}">
-                    {{ method_field('POST') }}
-                    {{ csrf_field() }}
+                <form method="post" id="data_form" action="{{ route('add-jobworkchallan') }}">
                     @if (Session::get('success'))
                         <div class="alert alert-success">
                             {{ Session::get('success') }}
@@ -74,10 +72,11 @@
                     @endif
 
                     @if (Session::get('fail'))
-                        <div class="alert alert-danger">
+                        <div class="alert alert-warning">
                             {{ Session::get('fail') }}
                         </div>
                     @endif
+                    @csrf
                     <div class="row">
                         <div class="col-sm-6 cmp-pnl">
                             <div id="customerpanel" class="inner-cmp-pnl">
@@ -85,14 +84,13 @@
                                     <div class="col-sm-12">
                                         <h3 class="title">
                                             Bill To
-                                            <a href='add-accounts.php' class="btn btn-primary">Add Account</a>
+                                            <a href='/add-accounts' class="btn btn-warning">Add Account</a>
                                         </h3>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <select name="accountype" class="selectpicker form-control"
                                         onchange="findaccounts(this.value)">
-                                        <option value="" hidden>Select Account Type</option>
                                         <option value="cash">Cash</option>
                                         <option value="debit">Debit</option>
                                     </select>
@@ -100,7 +98,6 @@
                                 <hr>
                                 <div class="form-row">
                                         <select id="accountid" name="accountid" class="selectpicker form-control">
-                                            <option value='{{ $PurchaseChallan->accountid }}' hidden>{{ $PurchaseChallan->account_name }}</option>
                                         </select>
                                     </div>
                                 <div id="supplier">
@@ -108,11 +105,7 @@
                                         Account Details
                                         <hr>
                                         <input type="hidden" name="supplier_id" id="supplier_id" value="0">
-                                        <div id="accounter_name">
-                                            NAME : {{ $PurchaseChallan->account_name }}
-                                            <br>
-                                            Balance : {{ $PurchaseChallan->balance }}
-                                        </div>
+                                        <div id="accounter_name"></div>
                                     </div>
                                     <hr>Product Group
                                     <select id="productgroup" name="productgroup" class="selectpicker form-control">
@@ -131,15 +124,15 @@
                                         <div class="input-group">
                                             <div class="input-group-addon"><span class="icon-file-text-o"
                                                     aria-hidden="true"></span></div>
-                                            <input class="form-control" name="orderid" value="{{ $PurchaseChallan->orderid }}" readonly>
+                                            <input class="form-control" name="orderid" value="0">
                                         </div>
                                     </div>
                                     <div class="col-sm-6"><label for="challanno" class="caption">Challan No </label>
                                         <div class="input-group">
                                             <div class="input-group-addon"><span class="icon-bookmark-o"
                                                     aria-hidden="true"></span></div>
-                                            <input type="text" class="form-control" value="{{ $PurchaseChallan->challannum }}" placeholder="Challan No #" name="challanno">
-                                        </div>
+                                            <input type="text" class="form-control" value="{{ $orderid }}" name="challanno" readonly>
+                                        </div> 
                                     </div>
                                 </div>
 
@@ -147,8 +140,8 @@
                                     <label>Order Date To Due Date</label>
                                         <div class="input-daterange input-group" data-date-format="yyyy-mm-dd"
                                             data-date-autoclose="true" data-provide="datepicker">
-                                            <input type="text" class="form-control" name="orderdate" autocomplete="off" value="{{ $PurchaseChallan->orderdate }}" />
-                                            <input type="text" class="form-control" name="orderduedate" autocomplete="off" value="{{ $PurchaseChallan->orderduedate }}"/>
+                                            <input type="text" class="form-control" name="orderdate" autocomplete="off" />
+                                            <input type="text" class="form-control" name="orderduedate" autocomplete="off"/>
                                         </div>
                                 </div>
                                 <div class="form-row">
@@ -156,7 +149,7 @@
                                         <label for="taxformat" class="caption">Tax </label>
                                         <select class="form-control round" onchange="changeTaxFormat(this.value)"
                                             name="taxformat" id="taxformat">
-
+                                        
                                             <option value="gst" data-tformat="cgst">CGST + SGST</option>
                                             <option value="igst" data-tformat="igst">IGST</option>
                                             <option value="other">other</option>
@@ -167,6 +160,8 @@
                                             <label for="discountFormat" class="caption"> Discount</label>
                                             <select class="form-control" onchange="changeDiscountFormat(this.value)"
                                                 name="discountFormat" id="discountFormat">
+
+                                                <option value="" hidden>Select Discount type</option>
                                                 <option value="b_p"> % Discount Before TAX</option>
                                                 <option value="bflat">Flat Discount Before TAX</option>
                                                 <option value="%"> % Discount After TAX</option>
@@ -178,7 +173,7 @@
                                 <div class="form-row">
                                     <div class="col-sm-12">
                                         <label for="toAddInfo" class="caption"> </label>
-                                        <textarea class="form-control" name="notes" rows="2" placeholder="Enter Description For Invoice">{{ $PurchaseChallan->notes }}</textarea>
+                                        <textarea class="form-control" name="notes" rows="2" placeholder="Enter Description For Invoice"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -187,7 +182,7 @@
                     <div id="saman-row">
                         <table class="table-responsive tfr my_stripe">
                             <thead>
-                                <tr class="item_header bg-primary white">
+                                <tr class="item_header bg-warning white">
                                     <th width="30%" class="text-center">Item Name</th>
                                     <th width="8%" class="text-center"> Quantity</th>
                                     <th width="10%" class="text-center">Rate</th>
@@ -199,54 +194,51 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $cval = 0; ?>
-                                @foreach ($products as $p)
-                                <?php $cval += 1; ?>
                                 <tr class="table-active">
                                     <td class="td">
-                                        <select id="products" name="product_name[]" onchange="getproduct(this.value, {{ $cval - 1 }})" class="selectpicker product_name form-control">
-                                            <option value="{{ $p['product_name'] }}" hidden>{{ $p['product_name'] }}</option>
+                                        <select id="products" name="product_name[]" onchange="getproduct(this.value, 0)" class="selectpicker product_name form-control">
+                                            <option value='' hidden>Select Product</option>
                                         </select>
                                     </td>
                                     <td class="td">
-                                        <input type="text" class="form-control req amnt" name="product_qty[]" id="amount-{{ $cval - 1 }}"
-                                            onkeypress="return isNumber(event)" onkeyup="rowTotal('{{ $cval - 1 }}'), billUpyog()"
-                                            autocomplete="off" value="{{ $p['product_qty'] }}">
+                                        <input type="text" class="form-control req amnt" name="product_qty[]" id="amount-0"
+                                            onkeypress="return isNumber(event)" onkeyup="rowTotal('0'), billUpyog()"
+                                            autocomplete="off" value="1">
                                     </td>
                                     <td class="td">
-                                        <input type="text" class="form-control req prc" name="product_price[]" id="price-{{ $cval - 1 }}"
-                                            onkeypress="return isNumber(event)" onkeyup="rowTotal('{{ $cval - 1 }}'), billUpyog()"
-                                            autocomplete="off" value="{{ $p['product_price'] }}">
+                                        <input type="text" class="form-control req prc" name="product_price[]" id="price-0"
+                                            onkeypress="return isNumber(event)" onkeyup="rowTotal('0'), billUpyog()"
+                                            autocomplete="off">
                                     </td>
                                     <td class="td">
-                                        <input type="text" class="form-control vat " name="product_tax[]" id="vat-{{ $cval - 1 }}"
-                                            onkeypress="return isNumber(event)" onkeyup="rowTotal('{{ $cval - 1 }}'), billUpyog()"
-                                            autocomplete="off" value="{{ $p['product_tax'] }}">
+                                        <input type="text" class="form-control vat " name="product_tax[]" id="vat-0"
+                                            onkeypress="return isNumber(event)" onkeyup="rowTotal('0'), billUpyog()"
+                                            autocomplete="off">
                                     </td>
-                                    <td class="td"><input name="texttaxa[]" class="text-center form-control"
-                                            id="texttaxa-{{ $cval - 1 }}" readonly value="{{ $p['texttaxa'] }}">
+                                    <td class="td"><input name="texttaxa[]" class="text-center form-control" value="0"
+                                            id="texttaxa-0" readonly>
                                     </td>
                                     <td class="td">
                                         <input type="text" class="form-control discount" name="product_discount[]"
-                                            onkeypress="return isNumber(event)" id="discount-{{ $cval - 1 }}"
-                                            onkeyup="rowTotal('{{ $cval - 1 }}'), billUpyog()" autocomplete="off" value="{{ $p['product_discount'] }}">
+                                            onkeypress="return isNumber(event)" id="discount-0"
+                                            onkeyup="rowTotal('0'), billUpyog()" autocomplete="off">
                                     </td>
                                     <td class="td">
-                                        <strong><input class='form-control ttlText' id="result-{{ $cval - 1 }}" name="ammount[]" value="{{ $p['ammount'] }}"
+                                        <strong><input class='form-control ttlText' id="result-0" name="ammount[]" value="0"
                                                 readonly></strong>
                                     </td>
-                                    <td class="td" class="text-center"><button type="button" data-rowid="" class="btn btn-danger removeProd" title="Remove" > <i class="fa fa-minus-square"></i> </button> </td>
-                                    <input type="hidden" name="taxa[]" id="taxa-{{ $cval - 1 }}" value="{{ $cval - 1 }}">
-                                    <input type="hidden" name="disca[]" id="disca-{{ $cval - 1 }}" value="{{ $cval - 1 }}">
-                                    <input type="hidden" class="ttInput" name="product_subtotal[]" id="total-{{ $cval - 1 }}" value="{{ $cval - 1 }}">
-                                    <input type="hidden" class="pdIn" name="pid[]" id="pid-{{ $cval - 1 }}" value="{{ $cval - 1 }}">
-                                    <input type="hidden" name="unit[]" id="unit-{{ $cval - 1 }}" value="">
-                                    <input type="hidden" name="hsn[]" id="hsn-{{ $cval - 1 }}" value="">
+                                    <td class="text-center">
+                                    </td>
+                                    <input type="hidden" name="taxa[]" id="taxa-0" value="0">
+                                    <input type="hidden" name="disca[]" id="disca-0" value="0">
+                                    <input type="hidden" class="ttInput" name="product_subtotal[]" id="total-0" value="0">
+                                    <input type="hidden" class="pdIn" name="pid[]" id="pid-0" value="0">
+                                    <input type="hidden" name="unit[]" id="unit-0" value="">
+                                    <input type="hidden" name="hsn[]" id="hsn-0" value="">
                                 </tr>
-                                @endforeach
                                 <tr class="last-item-row">
                                     <td class="add-row row">
-                                        <button type="button" class="btn btn-primary" id="addproduct">
+                                        <button type="button" class="btn btn-warning" id="addproduct">
                                             <i class="fa fa-plus-square"></i> Add Row </button>
                                     </td>
                                     <td colspan="7"></td>
@@ -276,12 +268,9 @@
                                             class="form-control" id="invoiceyoghtml" readonly="">
                                     </td>
                                 </tr>
-                                <tr style="display: table-row;">
-                                    <td style="padding-left: 78%;"><input type="submit" class="btn btn-primary sub-btn"
+                                <tr style="width: 100%;" class="row">
+                                    <td style="padding-left: 250%;"><input type="submit" class="btn btn-warning sub-btn"
                                             value="Generate Order" id="submit-data" data-loading-text="Creating...">
-                                    </td>
-                                    <td style="padding-left: 58%;">
-                                        <a href="/purchasereturn" class="btn btn-danger">Cancel</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -290,7 +279,7 @@
                     <input type="hidden" value="stockreturn/action" id="action-url">
                     <input type="hidden" value="0" name="person_type">
                     <input type="hidden" value="puchase_search" id="billtype">
-                    <input type="hidden" value="{{ $cval - 1 }}" name="counter" id="ganak">
+                    <input type="hidden" value="0" name="counter" id="ganak">
                     <input type="hidden" value="$" name="currency">
                     <input type="hidden" value="%" name="tax_format" id="tax_format">
                     <input type="hidden" value="yes" name="tax_handle" id="tax_status">
@@ -309,7 +298,12 @@
 @endsection
 
 @section('script')
+
     <script>
+        $(document).ready(function() {
+            findaccounts('cash');
+        });
+
         function isNumber(evt) {
             evt = (evt) ? evt : window.event;
             var charCode = (evt.which) ? evt.which : evt.keyCode;

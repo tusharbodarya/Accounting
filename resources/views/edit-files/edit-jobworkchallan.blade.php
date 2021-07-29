@@ -46,12 +46,12 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
-                <h4 class="mb-0 font-size-18">Add Purchase Challan</h4>
+                <h4 class="mb-0 font-size-18">Add Job Work Challan</h4>
 
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Purchases</a></li>
-                        <li class="breadcrumb-item active">Add Purchase Challan</li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Job Work</a></li>
+                        <li class="breadcrumb-item active">Add Job Work Challan</li>
                     </ol>
                 </div>
 
@@ -64,7 +64,7 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card card-shadow mb-4">
-                <form method="post" id="data_form" action="/purchasechallan_update/{{ $PurchaseChallan->id }}">
+                <form method="post" id="data_form" action="/jobworkchallan_update/{{ $JobWorkChallan->id }}">
                     {{ method_field('POST') }}
                     {{ csrf_field() }}
                     @if (Session::get('success'))
@@ -100,7 +100,7 @@
                                 <hr>
                                 <div class="form-row">
                                         <select id="accountid" name="accountid" class="selectpicker form-control">
-                                            <option value='{{ $PurchaseChallan->accountid }}' hidden>{{ $PurchaseChallan->account_name }}</option>
+                                            <option value='{{ $JobWorkChallan->accountid }}' hidden>{{ $JobWorkChallan->account_name }}</option>
                                         </select>
                                     </div>
                                 <div id="supplier">
@@ -109,14 +109,14 @@
                                         <hr>
                                         <input type="hidden" name="supplier_id" id="supplier_id" value="0">
                                         <div id="accounter_name">
-                                            NAME : {{ $PurchaseChallan->account_name }}
+                                            NAME : {{ $JobWorkChallan->account_name }}
                                             <br>
-                                            Balance : {{ $PurchaseChallan->balance }}
+                                            Balance : {{ $JobWorkChallan->balance }}
                                         </div>
                                     </div>
                                     <hr>Product Group
                                     <select id="productgroup" name="productgroup" class="selectpicker form-control">
-                                        <option value='' hidden>Select Product Group</option>
+                                        <option value='{{ $JobWorkChallan->productcategory }}' hidden>Select Product Group</option>
                                         @foreach ($Categories as $Category)
                                             <option value='{{ $Category->id }}'>{{ $Category->name }}</option>
                                         @endforeach
@@ -131,14 +131,14 @@
                                         <div class="input-group">
                                             <div class="input-group-addon"><span class="icon-file-text-o"
                                                     aria-hidden="true"></span></div>
-                                            <input class="form-control" name="orderid" value="{{ $PurchaseChallan->orderid }}" readonly>
+                                            <input class="form-control" name="orderid" value="{{ $JobWorkChallan->orderid }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-sm-6"><label for="challanno" class="caption">Challan No </label>
                                         <div class="input-group">
                                             <div class="input-group-addon"><span class="icon-bookmark-o"
                                                     aria-hidden="true"></span></div>
-                                            <input type="text" class="form-control" value="{{ $PurchaseChallan->challannum }}" placeholder="Challan No #" name="challanno">
+                                            <input type="text" class="form-control" value="{{ $JobWorkChallan->challannum }}" placeholder="Challan No #" name="challanno">
                                         </div>
                                     </div>
                                 </div>
@@ -147,8 +147,8 @@
                                     <label>Order Date To Due Date</label>
                                         <div class="input-daterange input-group" data-date-format="yyyy-mm-dd"
                                             data-date-autoclose="true" data-provide="datepicker">
-                                            <input type="text" class="form-control" name="orderdate" autocomplete="off" value="{{ $PurchaseChallan->orderdate }}" />
-                                            <input type="text" class="form-control" name="orderduedate" autocomplete="off" value="{{ $PurchaseChallan->orderduedate }}"/>
+                                            <input type="text" class="form-control" name="orderdate" autocomplete="off" value="{{ $JobWorkChallan->orderdate }}" />
+                                            <input type="text" class="form-control" name="orderduedate" autocomplete="off" value="{{ $JobWorkChallan->orderduedate }}"/>
                                         </div>
                                 </div>
                                 <div class="form-row">
@@ -178,7 +178,7 @@
                                 <div class="form-row">
                                     <div class="col-sm-12">
                                         <label for="toAddInfo" class="caption"> </label>
-                                        <textarea class="form-control" name="notes" rows="2" placeholder="Enter Description For Invoice">{{ $PurchaseChallan->notes }}</textarea>
+                                        <textarea class="form-control" name="notes" rows="2" placeholder="Enter Description For Invoice">{{ $JobWorkChallan->notes }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -281,7 +281,7 @@
                                             value="Generate Order" id="submit-data" data-loading-text="Creating...">
                                     </td>
                                     <td style="padding-left: 58%;">
-                                        <a href="/purchasereturn" class="btn btn-danger">Cancel</a>
+                                        <a href="/show-jobworkchallan" class="btn btn-danger">Cancel</a>
                                     </td>
                                 </tr>
                             </tbody>

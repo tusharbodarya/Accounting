@@ -47,7 +47,7 @@
 				<p style="clear: both;margin-bottom: 0rem;"></p>
 			</div>
 		</div>
-		<div style="border-top: 2px solid;width: 100%;padding-bottom: 25%;">
+		<div style="border-top: 2px solid;width: 100%;">
 			<table style="width: 100%;">
 				<thead>
 					<tr style="text-align:center">
@@ -79,18 +79,24 @@
 					</tr>
 				</thead>
 				<tbody>
-						<?php $sr = 0; ?>
+						<?php
+							$sr = 0;
+							$taxableval = 0;
+						 ?>
 						@foreach ($products as $p)
-						<?php $product = explode("-",$p['product_name']); ?>
+						<?php    $product = explode("-",$p['product_name']);
+								 $taxable = (str_replace(',','',$p['product_price']) - ((str_replace(',','',$p['product_price']) * $p['product_discount'] / 100))) * $p['product_qty'];
+							 	 $taxableval += $taxable;
+							 ?>
 						<tr>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $sr += 1 }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $product[0] }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;"></td>
-							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $product[0] }}</td>
-							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $product['product_qty'] }}</td>
+							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ isset($product[1]) ? $product[1] : "" }}</td>
+							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $p['product_qty'] }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ number_format((float)str_replace(',','',$p['product_price']),2) }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ number_format((float)str_replace(',','',$p['product_discount']),2) }}</td>
-							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{  number_format((float)str_replace(',','',$p['texttaxa']),2) }}</td>
+							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $taxable }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{  number_format((float)str_replace(',','',$p['product_tax']),2) }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ number_format(str_replace(',','',$p['texttaxa']) / 2,2) }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ number_format(str_replace(',','',$p['texttaxa']) / 2,2) }}</td>
@@ -104,7 +110,7 @@
 			<p style="width: 54%;">GSTIN No. : <span> {{ Auth::user()->gstno }}</span></p>
 			<p style="width: 6%;">Total</p>
 			<p style="width: 6%;">{{ $salesReturn->totaldiscount }}</p>
-			<p style="width: 11%;">{{ $salesReturn->totaltax }}</p>
+			<p style="width: 11%;">{{ $taxableval }}</p>
 			<p style="width: 6.5%;">{{ number_format(str_replace(',','',$salesReturn->totaltax) / 2,2) }}</p>
 			<p style="width: 6.5%;">{{ number_format(str_replace(',','',$salesReturn->totaltax) / 2,2) }}</p>
 			<p style="width: 10%;">{{ $salesReturn->total }}</p>
@@ -158,7 +164,7 @@
 		var printContents = document.getElementById(divName).innerHTML;
 		var originalContents = document.body.innerHTML;
 
-		document.body.innerHTML = printContents;
+		document.body.innerHTML = printContents+"<br>"+printContents;
 
 		window.print();
 

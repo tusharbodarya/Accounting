@@ -8,6 +8,8 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\PurchaseReturnController;
+use App\Http\Controllers\ChallanController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 /*
@@ -91,13 +93,21 @@ Route::group(['middleware'=>['AuthCheck']],function(){
     Route::post('/fetch-productsdetails', [SalesController::class, 'fetch_productsdetails'])->name('fetch-productsdetails');
     Route::get('/send-mail', [SalesController::class, 'sendInvoice'])->name('send-mail');
     // Sales Challan
-    Route::get('/salechallan', [SalesController::class, 'salechallan'])->name('salechallan');
-    Route::get('/salechallan-view/{id}', [SalesController::class, 'saleChallanView']);
-    Route::get('/salechallan/{id}', [SalesController::class, 'saleChallan_edit']);
-    Route::get('/salechallan-delete/{id}', [SalesController::class, 'saleChallanDelete']);
-    Route::post('/salechallan_update/{id}', [SalesController::class, 'salechallan_update']);
-    Route::post('/add-salechallan', [SalesController::class, 'salechallan_store'])->name('add-salechallan');
-    Route::get('/show-salechallan', [SalesController::class, 'salechallan_show'])->name('show-salechallan');
+    Route::get('/salechallan', [ChallanController::class, 'salechallan'])->name('salechallan');
+    Route::get('/salechallan-view/{id}', [ChallanController::class, 'saleChallanView']);
+    Route::get('/salechallan/{id}', [ChallanController::class, 'saleChallan_edit']);
+    Route::get('/salechallan-delete/{id}', [ChallanController::class, 'saleChallanDelete']);
+    Route::post('/salechallan_update/{id}', [ChallanController::class, 'salechallan_update']);
+    Route::post('/add-salechallan', [ChallanController::class, 'salechallan_store'])->name('add-salechallan');
+    Route::get('/show-salechallan', [ChallanController::class, 'salechallan_show'])->name('show-salechallan');
+    // Job Work Challan
+    Route::get('/jobworkchallan', [ChallanController::class, 'jobworkchallan'])->name('jobworkchallan');
+    Route::get('/jobworkchallan-view/{id}', [ChallanController::class, 'jobworkchallanView']);
+    Route::get('/jobworkchallan/{id}', [ChallanController::class, 'jobworkchallan_edit']);
+    Route::get('/jobworkchallan-delete/{id}', [ChallanController::class, 'jobworkchallanDelete']);
+    Route::post('/jobworkchallan_update/{id}', [ChallanController::class, 'jobworkchallan_update']);
+    Route::post('/add-jobworkchallan', [ChallanController::class, 'jobworkchallan_store'])->name('add-jobworkchallan');
+    Route::get('/show-jobworkchallan', [ChallanController::class, 'jobworkchallan_show'])->name('show-jobworkchallan');
     // Sales Return
     Route::resource('salesreturn', SalesReturnController::class);
     Route::get('/salesreturn-delete/{id}', [SalesReturnController::class, 'salesReturnDelete']);
@@ -117,20 +127,21 @@ Route::group(['middleware'=>['AuthCheck']],function(){
     Route::resource('purchaseinvoice', PurchaseController::class);
     Route::get('/purchaseinvoice-delete/{id}', [PurchaseController::class, 'purchaseInvoiceDelete']);
     //purchase challan
-    Route::get('/purchasechallan', [PurchaseController::class, 'purchasechallan'])->name('purchasechallan');
-    Route::get('/purchasechallan-view/{id}', [PurchaseController::class, 'purchaseChallanView']);
-    Route::get('/purchasechallan/{id}', [PurchaseController::class, 'purchaseChallan_edit']);
-    Route::get('/purchasechallan-delete/{id}', [PurchaseController::class, 'purchaseChallanDelete']);
-    Route::post('/purchasechallan_update/{id}', [PurchaseController::class, 'purchasechallan_update']);
-    Route::post('/add-purchasechallan', [PurchaseController::class, 'purchasechallan_store'])->name('add-purchasechallan');
-    Route::get('/show-purchasechallan', [PurchaseController::class, 'purchasechallan_show'])->name('show-purchasechallan');
+    Route::get('/purchasechallan', [ChallanController::class, 'purchasechallan'])->name('purchasechallan');
+    Route::get('/purchasechallan-view/{id}', [ChallanController::class, 'purchaseChallanView']);
+    Route::get('/purchasechallan/{id}', [ChallanController::class, 'purchaseChallan_edit']);
+    Route::get('/purchasechallan-delete/{id}', [ChallanController::class, 'purchaseChallanDelete']);
+    Route::post('/purchasechallan_update/{id}', [ChallanController::class, 'purchasechallan_update']);
+    Route::post('/add-purchasechallan', [ChallanController::class, 'purchasechallan_store'])->name('add-purchasechallan');
+    Route::get('/show-purchasechallan', [ChallanController::class, 'purchasechallan_show'])->name('show-purchasechallan');
     // Transactions
-    Route::get('/add-transaction', [AccountsController::class, 'transactions']);
-    Route::post('/fetch-transactionac', [AccountsController::class, 'fetch_transactionac'])->name('fetch-transactionac');
-    Route::post('/fetch-transactionacdetails', [AccountsController::class, 'fetch_transactionacdetails'])->name('fetch-transactionacdetails');
-    Route::post('/store-transaction', [AccountsController::class, 'store_transaction'])->name('fetch-transaction');
-    Route::get('/transaction', [AccountsController::class, 'index_transaction'])->name('transaction');
-    Route::get('/transaction-view/{id}', [AccountsController::class, 'transaction_view'])->name('transaction-view');
+    Route::resource('transaction', TransactionController::class);
+    Route::get('/add-banktransaction', [TransactionController::class, 'bank_create']);
+    // Route::post('/fetch-transactionac', [AccountsController::class, 'fetch_transactionac'])->name('fetch-transactionac');
+    // Route::post('/fetch-transactionacdetails', [AccountsController::class, 'fetch_transactionacdetails'])->name('fetch-transactionacdetails');
+    // Route::post('/store-transaction', [AccountsController::class, 'store_transaction'])->name('fetch-transaction');
+    // Route::get('/transaction', [AccountsController::class, 'index_transaction'])->name('transaction');
+    // Route::get('/transaction-view/{id}', [AccountsController::class, 'transaction_view'])->name('transaction-view');
     Route::get('/accountstatement', [AccountsController::class, 'accountstatement'])->name('accountstatement');
     
     //Reports

@@ -161,6 +161,7 @@
                                             <label for="discountFormat" class="caption"> Discount</label>
                                             <select class="form-control" onchange="changeDiscountFormat(this.value)"
                                                 name="discountFormat" id="discountFormat">
+                                                <option value="" hidden>Select Discount type</option>
                                                 <option value="b_p"> % Discount Before TAX</option>
                                                 <option value="bflat">Flat Discount Before TAX</option>
                                                 <option value="%"> % Discount After TAX</option>

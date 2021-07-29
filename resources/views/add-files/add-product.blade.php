@@ -51,22 +51,22 @@
                                     <div class="form-group">
                                         <label for="code">Product Code</label>
                                         <input type="text" class="form-control" id="code" name="code"
-                                             placeholder="Enter Product code">
-                                        </div>
+                                            placeholder="Enter Product code">
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label for="categories">Product Category</label>
-                                            <select id="categories" name="categories" class="form-control">
-                                                <option value='{{ old('categories') }}' hidden>Product Category </option>
-                                                @foreach ($Categories as $Category)
-                                                    <option value='{{ $Category->id }}'>{{ $Category->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <span class="text-danger">@error('categories'){{ $message }}@enderror</span>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="categories">Product Category</label>
+                                        <select id="categories" name="categories" class="form-control">
+                                            <option value='{{ old('categories') }}' hidden>Product Category </option>
+                                            @foreach ($Categories as $Category)
+                                                <option value='{{ $Category->id }}'>{{ $Category->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="text-danger">@error('categories'){{ $message }}@enderror</span>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -76,8 +76,8 @@
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text">$</div>
                                                 </div>
-                                                <input type="text" class="form-control" id="price" name="price"
-                                                    value="{{ old('price') }}" placeholder="Enter Price">
+                                                <input type="text" class="form-control" id="price" name="price" value="0"
+                                                    placeholder="Enter Price">
                                             </div>
                                             <span class="text-danger">@error('price'){{ $message }}@enderror</span>
                                             </div>
