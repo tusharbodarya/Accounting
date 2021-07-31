@@ -13,7 +13,7 @@ function findaccounts(name) {
         },
         cache: false,
         success: function (result) {
-            var accounts = "";
+            var accounts = "<option value='' hidden>Select Account</option>";
             $.each(result, function (index, value) {
                 accounts +=
                     "<option value='" +
@@ -22,7 +22,7 @@ function findaccounts(name) {
                     value.name +
                     "</option>";
             });
-            $("#accountid").append(accounts);
+            $("#accountid").html(accounts);
         },
     });
 }
@@ -67,7 +67,7 @@ $("#productgroup").on("change", function () {
             var products = "";
             $.each(result, function (index, value) {
             products +=
-                "<option value=" + value.name + ">" + value.name + "</option>";
+                "<option value='" + value.name + "'>" + value.name + "</option>";
             });
             $(".product_name").append(products);
         },
@@ -679,7 +679,7 @@ function formatRest(taxFormat, disFormat, trate = "") {
                     var Inpercentage = precentCalc(result, discountVal);
                     result = result - Inpercentage;
                     $("#disca-" + x).val(accounting.formatNumber(Inpercentage));
-                    discsr = discsr + Inpercentage;
+                    discsr += Inpercentage;
                 } else if (disFormat == "bflat") {
                     result = result - discountVal;
                     $("#disca-" + x).val(accounting.formatNumber(discountVal));

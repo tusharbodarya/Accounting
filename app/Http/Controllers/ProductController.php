@@ -20,7 +20,7 @@ class ProductController extends Controller
 
     public function create()
     {
-        $Categories = ProductCategories::where('deleted_at', 1)->get();
+        $Categories = ProductCategories::where('is_deleted', 1)->get();
         return view('add-files/add-product')->with('Categories', $Categories);
     }
 
@@ -71,7 +71,7 @@ class ProductController extends Controller
             ->select('products.*', 'pc.name as catname')
             ->where('products.id', $id)
             ->first();
-        $Categories = ProductCategories::where('deleted_at', 1)->get();
+        $Categories = ProductCategories::where('is_deleted', 1)->get();
         return view('edit-files/edit-product')->with(['Products' => $Products, 'Categories' => $Categories]);
     }
 
@@ -89,7 +89,7 @@ class ProductController extends Controller
             "categories" => 'required',
             "price" => 'required'
         ]);
-        $ProductCategories = Products::where('id', $id)
+        $Products = Products::where('id', $id)
             ->update([
                 'name' => $request->name,
                 'code' => $request->code,
@@ -121,6 +121,18 @@ class ProductController extends Controller
         ]);
         $productCat = new ProductCategories;
         $productCat->name =  $req->name;
+        $productCat->saree_niddle1 =  $req->saree_niddle1;
+        $productCat->saree_niddle2 =  $req->saree_niddle2;
+        $productCat->saree_niddle3 =  $req->saree_niddle3;
+        $productCat->saree_niddle4 =  $req->saree_niddle4;
+        $productCat->saree_niddle5 =  $req->saree_niddle5;
+        $productCat->saree_niddle6 =  $req->saree_niddle6;
+        $productCat->lace_niddle1 =  $req->lace_niddle1;
+        $productCat->lace_niddle2 =  $req->lace_niddle2;
+        $productCat->lace_niddle3 =  $req->lace_niddle3;
+        $productCat->lace_niddle4 =  $req->lace_niddle4;
+        $productCat->lace_niddle5 =  $req->lace_niddle5;
+        $productCat->lace_niddle6 =  $req->lace_niddle6;
         $productCat->description =  $req->Description;
         $save = $productCat->save();
         if ($save) {
@@ -132,7 +144,7 @@ class ProductController extends Controller
 
     public function tbl_fetchproductCatagories()
     {
-        $Categories = ProductCategories::where('deleted_at', 1)->get();
+        $Categories = ProductCategories::where('is_deleted', 1)->get();
         return view('tbl-files/tbl-categories')->with('Categories', $Categories);
     }
 
@@ -150,7 +162,19 @@ class ProductController extends Controller
         $ProductCategories = ProductCategories::where('id', $req->id)
             ->update([
                 'name' => $req->name,
-                'description' => $req->Description
+                'description' => $req->Description,
+                'saree_niddle1' =>  $req->saree_niddle1,
+                'saree_niddle2' =>  $req->saree_niddle2,
+                'saree_niddle3' =>  $req->saree_niddle3,
+                'saree_niddle4' =>  $req->saree_niddle4,
+                'saree_niddle5' =>  $req->saree_niddle5,
+                'saree_niddle6' =>  $req->saree_niddle6,
+                'lace_niddle1' =>  $req->lace_niddle1,
+                'lace_niddle2' =>  $req->lace_niddle2,
+                'lace_niddle3' =>  $req->lace_niddle3,
+                'lace_niddle4' =>  $req->lace_niddle4,
+                'lace_niddle5' =>  $req->lace_niddle5,
+                'lace_niddle6' =>  $req->lace_niddle6
             ]);
 
         return redirect('/tbl-productCatagories')->with('success', 'Product Category has been Successfuly Updated.');

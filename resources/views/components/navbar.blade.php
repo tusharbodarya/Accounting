@@ -76,11 +76,11 @@
                             <div class="dropdown">
                                 <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-Suppliers"
                                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Suppliers <div class="arrow-down"></div>
+                                    Job Work <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-Suppliers">
-                                    <a href="add-suppliers.php" class="dropdown-item">New Supplier</a>
-                                    <a href="tbl-suppliers.php" class="dropdown-item">Manage Suppliers</a>
+                                    <a href="{{ url('/jobworkchallan') }}" class="dropdown-item">New Job Work Challan</a>
+                                    <a href="{{ url('/show-jobworkchallan') }}" class="dropdown-item">Manage Job Work Challan</a>
                                 </div>
                             </div>
                         </div>
@@ -133,8 +133,8 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-Transactions">
                                     <a href="{{ url('/transaction') }}" class="dropdown-item">View Transactions</a>
-                                    <a href="{{ url('/add-transaction') }}" class="dropdown-item">New Transaction</a>
-                                    <a href="ecommerce-orders.html" class="dropdown-item">New Transfer</a>
+                                    <a href="{{ url('/add-banktransaction') }}" class="dropdown-item">BANK</a>
+                                    <a href="ecommerce-orders.html" class="dropdown-item">CASH</a>
                                     <a href="ecommerce-customers.html" class="dropdown-item">Income</a>
                                     <a href="ecommerce-customers.html" class="dropdown-item">Expense</a>
                                 </div>

@@ -46,12 +46,12 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
-                <h4 class="mb-0 font-size-18">Add Purchase Invoice</h4>
+                <h4 class="mb-0 font-size-18">Add Job Work Challan</h4>
 
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Purchase</a></li>
-                        <li class="breadcrumb-item active">Add Purchase Invoice</li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Job Work</a></li>
+                        <li class="breadcrumb-item active">Add Job Work Challan</li>
                     </ol>
                 </div>
 
@@ -64,7 +64,7 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card card-shadow mb-4">
-                <form method="post" id="data_form" action="{{ route('purchaseinvoice.store') }}">
+                <form method="post" id="data_form" action="{{ route('add-jobworkchallan') }}">
                     @if (Session::get('success'))
                         <div class="alert alert-success">
                             {{ Session::get('success') }}
@@ -72,7 +72,7 @@
                     @endif
 
                     @if (Session::get('fail'))
-                        <div class="alert alert-danger">
+                        <div class="alert alert-warning">
                             {{ Session::get('fail') }}
                         </div>
                     @endif
@@ -84,7 +84,7 @@
                                     <div class="col-sm-12">
                                         <h3 class="title">
                                             Bill To
-                                            <a href='/add-accounts' class="btn btn-info">Add Account</a>
+                                            <a href='/add-accounts' class="btn btn-warning">Add Account</a>
                                         </h3>
                                     </div>
                                 </div>
@@ -98,7 +98,6 @@
                                 <hr>
                                 <div class="form-row">
                                         <select id="accountid" name="accountid" class="selectpicker form-control">
-                                            <option value='' hidden>Select Account</option>
                                         </select>
                                     </div>
                                 <div id="supplier">
@@ -125,15 +124,15 @@
                                         <div class="input-group">
                                             <div class="input-group-addon"><span class="icon-file-text-o"
                                                     aria-hidden="true"></span></div>
-                                            <input class="form-control" name="orderid" value="{{ $orderid }}">
+                                            <input class="form-control" name="orderid" value="0">
                                         </div>
                                     </div>
                                     <div class="col-sm-6"><label for="challanno" class="caption">Challan No </label>
                                         <div class="input-group">
                                             <div class="input-group-addon"><span class="icon-bookmark-o"
                                                     aria-hidden="true"></span></div>
-                                            <input type="text" class="form-control" placeholder="Challan No #" name="challanno">
-                                        </div>
+                                            <input type="text" class="form-control" value="{{ $orderid }}" name="challanno" readonly>
+                                        </div> 
                                     </div>
                                 </div>
 
@@ -150,7 +149,7 @@
                                         <label for="taxformat" class="caption">Tax </label>
                                         <select class="form-control round" onchange="changeTaxFormat(this.value)"
                                             name="taxformat" id="taxformat">
-
+                                        
                                             <option value="gst" data-tformat="cgst">CGST + SGST</option>
                                             <option value="igst" data-tformat="igst">IGST</option>
                                             <option value="other">other</option>
@@ -182,7 +181,7 @@
                     <div id="saman-row">
                         <table class="table-responsive tfr my_stripe">
                             <thead>
-                                <tr class="item_header bg-info white">
+                                <tr class="item_header bg-warning white">
                                     <th width="30%" class="text-center">Item Name</th>
                                     <th width="8%" class="text-center"> Quantity</th>
                                     <th width="10%" class="text-center">Rate</th>
@@ -238,7 +237,7 @@
                                 </tr>
                                 <tr class="last-item-row">
                                     <td class="add-row row">
-                                        <button type="button" class="btn btn-info" id="addproduct">
+                                        <button type="button" class="btn btn-warning" id="addproduct">
                                             <i class="fa fa-plus-square"></i> Add Row </button>
                                     </td>
                                     <td colspan="7"></td>
@@ -269,7 +268,7 @@
                                     </td>
                                 </tr>
                                 <tr style="width: 100%;" class="row">
-                                    <td style="padding-left: 250%;"><input type="submit" class="btn btn-info sub-btn"
+                                    <td style="padding-left: 250%;"><input type="submit" class="btn btn-warning sub-btn"
                                             value="Generate Order" id="submit-data" data-loading-text="Creating...">
                                     </td>
                                 </tr>

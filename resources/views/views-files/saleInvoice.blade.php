@@ -35,19 +35,19 @@
 		</div>
 		<div style="display: flex;">
 			<div style="width: 65%;border-right: 2px solid;">
-				<p>M/S : {{ $saleInvoice->account_name }}</p>
+				<p>M/S : <b>{{ $saleInvoice->account_name }}</b></p>
 				<p>{{ $saleInvoice->city }} - {{ $saleInvoice->pincode }}</p>
-				<p>GST NO : {{ $saleInvoice->gstno }}</p>
+				<p>GST NO : <b>{{ $saleInvoice->gstno }}</b></p>
 				<p style="clear: both;margin-bottom: 0rem;"></p>
 			</div>
 			<div style="width: 35%;border-bottom: 2px solid;background-color: #f2f2f2;margin-bottom: 40px;">
-				<p style="margin-bottom: 0rem;">Bill No : #{{ $saleInvoice->orderid }}</p>
+				<p style="margin-bottom: 0rem;">Bill No : <b>{{ $saleInvoice->orderid }}</b></p>
 				<p style="margin-bottom: 0rem;">Challen Date : {{ date_format(date_create($saleInvoice->created_at),"d/m/Y") }} </p>
-				<p style="margin-bottom: 0rem;">Challen No : #{{ $saleInvoice->challannum }}</p>
+				<p style="margin-bottom: 0rem;">Challen No : <b>{{ $saleInvoice->challannum }}</b></p>
 				<p style="clear: both;margin-bottom: 0rem;"></p>
 			</div>
 		</div>
-		<div style="border-top: 2px solid;width: 100%;padding-bottom: 25%;">
+		<div style="border-top: 2px solid;width: 100%;">
 			<table style="width: 100%;">
 				<thead>
 					<tr style="text-align:center">
@@ -79,18 +79,24 @@
 					</tr>
 				</thead>
 				<tbody>
-						<?php $sr = 0; ?>
+						<?php
+							$sr = 0;
+							$taxableval = 0;
+						 ?>
 						@foreach ($products as $p)
-						<?php $product = explode("-",$p['product_name']); ?>
+						<?php    $product = explode("-",$p['product_name']);
+								 $taxable = (str_replace(',','',$p['product_price']) - ((str_replace(',','',$p['product_price']) * $p['product_discount'] / 100))) * $p['product_qty'];
+							 	 $taxableval += $taxable;
+							 ?>
 						<tr>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $sr += 1 }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $product[0] }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;"></td>
-							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $product[1] }}</td>
+							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ isset($product[1]) ? $product[1] : "" }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $p['product_qty'] }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ number_format((float)str_replace(',','',$p['product_price']),2) }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ number_format((float)str_replace(',','',$p['product_discount']),2) }}</td>
-							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{  number_format((float)str_replace(',','',$p['texttaxa']),2) }}</td>
+							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ $taxable }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{  number_format((float)str_replace(',','',$p['product_tax']),2) }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ number_format(str_replace(',','',$p['texttaxa']) / 2,2) }}</td>
 							<td style="border-bottom: 2px solid;border-right: 2px solid;">{{ number_format(str_replace(',','',$p['texttaxa']) / 2,2) }}</td>
@@ -104,7 +110,7 @@
 			<p style="width: 54%;">GSTIN No. : <span> {{ Auth::user()->gstno }}</span></p>
 			<p style="width: 6%;">Total</p>
 			<p style="width: 6%;">{{ $saleInvoice->totaldiscount }}</p>
-			<p style="width: 11%;">{{ $saleInvoice->totaltax }}</p>
+			<p style="width: 11%;">{{ $taxableval }}</p>
 			<p style="width: 6.5%;">{{ number_format(str_replace(',','',$saleInvoice->totaltax) / 2,2) }}</p>
 			<p style="width: 6.5%;">{{ number_format(str_replace(',','',$saleInvoice->totaltax) / 2,2) }}</p>
 			<p style="width: 10%;">{{ $saleInvoice->total }}</p>
@@ -120,7 +126,7 @@
 		<div style="display: flex;">
 			<div style="width: 73%;border-top: 2px solid;">
 				<p>Total GST : {{ $saleInvoice->totaltax }}</p>
-				<p>Bill Amount : {{ $saleInvoice->total }}</p>
+				<p>Bill Amount : </p>
 			</div>
 			<div style="width: 27%;border-top: 2px solid;border-left: 2px solid;">
 				<div style="display: flex;background-color: #f2f2f2;height: 30px;padding-bottom: 30px;border: 1px solid;" >
@@ -158,7 +164,7 @@
 		var printContents = document.getElementById(divName).innerHTML;
 		var originalContents = document.body.innerHTML;
 
-		document.body.innerHTML = printContents;
+		document.body.innerHTML = printContents +"<br>"+printContents;
 
 		window.print();
 

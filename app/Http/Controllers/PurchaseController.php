@@ -34,7 +34,7 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        $Categories = ProductCategories::where('deleted_at', 1)->get();
+        $Categories = ProductCategories::where('is_deleted', 1)->get();
         $orderid = PurchaseInvoice::count();
         $orderid += 1;
         return view('add-files/add-purchaseorder')->with(['Categories' => $Categories, 'orderid' => $orderid]);
@@ -158,8 +158,12 @@ class PurchaseController extends Controller
      */
     public function edit($id)
     {
-        $purchaseInvoice = PurchaseInvoice::where('id', $id)->first();
-        return view('edit-files/edit-purchaseinvoice')->with(['purchaseInvoice' => $purchaseInvoice]);
+        $PurchaseInvoice = PurchaseInvoice::join('accounts', 'purchase_invoices.accountid', '=', 'accounts.id')
+        ->select('purchase_invoices.*', 'accounts.name as account_name', 'accounts.balance as balance', 'accounts.gstno as gstno', 'accounts.city as city', 'accounts.pincode as pincode',)
+        ->where('purchase_invoices.id', $id)->first();
+        $Categories = ProductCategories::where('is_deleted', 1)->get();
+        $products = unserialize($PurchaseInvoice->productarray);
+        return view('edit-files/edit-purchaseinvoice')->with(['PurchaseInvoice' => $PurchaseInvoice, 'Categories' => $Categories, 'products' => $products]);
     }
 
     /**
@@ -171,12 +175,125 @@ class PurchaseController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            "orderid" => 'required',
+            "total" => 'required',
+            "accountid" => 'required'
+        ]);
+
+        $PurchaseInvoice = PurchaseInvoice::where('id', $id)->first();
+        switch ($PurchaseInvoice->taxformate) {
+            case 'gst':
+                $centralTaxOP = Accounts::where('id', '=', '20')->first();
+                $totaltax = str_replace(',', '', $PurchaseInvoice->totaltax);
+                $totaltax = $totaltax / 2;
+                $centralTaxOP->balance -= $totaltax;
+                $centralTaxOP->save();
+                $stateTaxOP = Accounts::where('id', '=', '56')->first();
+                $stateTaxOP->balance -= $totaltax;
+                $stateTaxOP->save();
+                $gst = Accounts::where('id', '=', '10')->first();
+                $totalgst = str_replace(',', '', $PurchaseInvoice->total) - str_replace(',', '', $PurchaseInvoice->totaltax);
+                $gst->balance -= $totalgst;
+                $gst->save();
+                break;
+            case 'igst':
+                $intTaxOP = Accounts::where('id', '=', '58')->first();
+                $totaltax = str_replace(',', '', $PurchaseInvoice->totaltax);
+                $intTaxOP->balance -= $totaltax;
+                $intTaxOP->save();
+                $igst = Accounts::where('id', '=', '11')->first();
+                $totaligst = str_replace(',', '', $PurchaseInvoice->total) - str_replace(',', '', $PurchaseInvoice->totaltax);
+                $igst->balance -= $totaligst;
+                $igst->save();
+                break;
+            case 'other':
+                $nongst = Accounts::where('id', '=', '14')->first();
+                $totalnongst = str_replace(',', '', $PurchaseInvoice->total) - str_replace(',', '', $PurchaseInvoice->totaltax);
+                $nongst->balance -= $totalnongst;
+                $nongst->save();
+                break;
+        }
+
+        $totalBalance = Accounts::where('id', $PurchaseInvoice->accountid)->first();
+        $total = str_replace(',', '', $PurchaseInvoice->total);
+        $totalBalance->balance -= $total;
+        $totalBalance->save();
+
+        switch ($request->taxformat) {
+            case 'gst':
+                $centralTaxOP = Accounts::where('id', '=', '20')->first();
+                $totaltax = str_replace(',', '', $request->totaltax);
+                $totaltax = $totaltax / 2;
+                $centralTaxOP->balance += $totaltax;
+                $centralTaxOP->save();
+                $stateTaxOP = Accounts::where('id', '=', '56')->first();
+                $stateTaxOP->balance += $totaltax;
+                $stateTaxOP->save();
+                $gst = Accounts::where('id', '=', '10')->first();
+                $totalgst = str_replace(',', '', $request->total) - str_replace(',', '', $request->totaltax);
+                $gst->balance += $totalgst;
+                $gst->save();
+                break;
+            case 'igst':
+                $intTaxOP = Accounts::where('id', '=', '58')->first();
+                $totaltax = str_replace(',', '', $request->totaltax);
+                $intTaxOP->balance += $totaltax;
+                $intTaxOP->save();
+                $igst = Accounts::where('id', '=', '11')->first();
+                $totaligst = str_replace(',', '', $request->total) - str_replace(',', '', $request->totaltax);
+                $igst->balance += $totaligst;
+                $igst->save();
+                break;
+            case 'other':
+                $nongst = Accounts::where('id', '=', '14')->first();
+                $totalnongst = str_replace(',', '', $request->total) - str_replace(',', '', $request->totaltax);
+                $nongst->balance += $totalnongst;
+                $nongst->save();
+                break;
+        }
+
+        $totalBalance = Accounts::where('id', $request->accountid)->first();
+        $total = str_replace(',', '', $request->total);
+        $totalBalance->balance += $total;
+        $totalBalance->save();
+
+        $product_name = $request->product_name;
+        $product_qty = $request->product_qty;
+        $product_price = $request->product_price;
+        $product_tax = $request->product_tax;
+        $texttaxa = $request->texttaxa;
+        $product_discount = $request->product_discount;
+        $ammount = $request->ammount;
+        $size = sizeof($product_name);
+        $products  = array();
+        for ($i = 0; $i < $size; $i++) {
+            $products[] = array(
+                'product_name' => $product_name[$i],
+                'product_qty' => $product_qty[$i],
+                'product_price' => $product_price[$i],
+                'product_tax' => $product_tax[$i],
+                'texttaxa' => $texttaxa[$i],
+                'product_discount' => $product_discount[$i],
+                'ammount' => $ammount[$i]
+            );
+        }
+        $productarray = serialize($products);
+        
         $purchaseInvoice = PurchaseInvoice::where('id', $id)
         ->update([
+            'orderid' => $request->orderid,
+            'accountid' => $request->accountid,
             'challannum' => $request->challanno,
             'orderdate' => $request->orderdate,
             'orderduedate' => $request->orderduedate,
-            'notes' => $request->notes
+            'taxformate' => $request->taxformat,
+            'discountformate' => $request->discountFormat,
+            'notes' => $request->notes,
+            'productarray' => $productarray,
+            'totaltax' => $request->totaltax,
+            'totaldiscount' => $request->totaldiscount,
+            'total' => $request->total
         ]);
 
         return redirect('/purchaseinvoice')->with('success', 'Purchase Invoice has been Successfuly Updated.');
@@ -236,103 +353,5 @@ class PurchaseController extends Controller
         return redirect('/purchaseinvoice')->with('success', 'Purchase Invoice has been Successfuly Deleted.');
     }
 
-    public function PurchaseChallan()
-    {
-        $Categories = ProductCategories::where('deleted_at', 1)->get();
-        $orderid = PurchaseChallan::count();
-        $orderid += 1;
-        return view('add-files/add-purchasechallan')->with(['Categories' => $Categories, 'orderid' => $orderid]);
-    }
-
-    public function PurchaseChallan_store(Request $req)
-    {
-        $req->validate([
-            "orderid" => 'required | unique:purchase_challans',
-            "total" => 'required',
-            "accountid" => 'required'
-        ]);
-
-        $PurchaseChallan = new PurchaseChallan;
-        $PurchaseChallan->orderid = $req->orderid;
-        $PurchaseChallan->accountid = $req->accountid;
-        $PurchaseChallan->invoicetype = 'Purchase Challan';
-        $PurchaseChallan->challannum = $req->challanno;
-        $PurchaseChallan->orderdate = $req->orderdate;
-        $PurchaseChallan->orderduedate = $req->orderduedate;
-        $PurchaseChallan->taxformate = $req->taxformat;
-        $PurchaseChallan->discountformate = $req->discountFormat;
-        $PurchaseChallan->notes = $req->notes;
-        $product_name = $req->product_name;
-        $product_qty = $req->product_qty;
-        $product_price = $req->product_price;
-        $product_tax = $req->product_tax;
-        $texttaxa = $req->texttaxa;
-        $product_discount = $req->product_discount;
-        $ammount = $req->ammount;
-        $size = sizeof($product_name);
-        $products  = array();
-        for ($i = 0; $i < $size; $i++) {
-            $products[] = array(
-                'product_name' => $product_name[$i],
-                'product_qty' => $product_qty[$i],
-                'product_price' => $product_price[$i],
-                'product_tax' => $product_tax[$i],
-                'texttaxa' => $texttaxa[$i],
-                'product_discount' => $product_discount[$i],
-                'ammount' => $ammount[$i]
-            );
-        }
-        $productarray = serialize($products);
-        $PurchaseChallan->productarray = $productarray;
-        $PurchaseChallan->totaltax = $req->totaltax;
-        $PurchaseChallan->totaldiscount = $req->totaldiscount;
-        $PurchaseChallan->total = $req->total;
-        $save = $PurchaseChallan->save();
-        if ($save) {
-            return back()->with('success', 'Sale Invoice has been Successfuly added.');
-        } else {
-            return back()->with('fail', 'Somthing Went wrong, try Again Later');
-        }
-    }
-
-    public function PurchaseChallan_show()
-    {
-        $PurchaseChallans = PurchaseChallan::join('accounts', 'purchase_challans.accountid', '=', 'accounts.id')
-        ->select('purchase_challans.*', 'accounts.name as account_name')
-        ->where('purchase_challans.is_deleted', 1)
-        ->get();
-        return view('tbl-files/tbl-purchasechallan')->with(['PurchaseChallans' => $PurchaseChallans]);
-    }
-
-    public function PurchaseChallan_edit($id)
-    {
-        $PurchaseChallans = PurchaseChallan::where('id', $id)->first();
-        return view('edit-files/edit-PurchaseChallan')->with(['PurchaseChallans' => $PurchaseChallans]);
-    }
-
-    public function PurchaseChallan_update(Request $request, $id)
-    {
-        $PurchaseChallans = PurchaseChallan::where('id', $id)
-            ->update([
-                'challannum' => $request->challanno,
-                'orderdate' => $request->orderdate,
-                'orderduedate' => $request->orderduedate,
-                'notes' => $request->notes
-            ]);
-
-        return redirect('/show-purchasechallan')->with('success', 'Sale Challan has been Successfuly Updated.');
-    }
-
-    public function purchaseChallanView($id){
-        $purchaseChallan = PurchaseChallan::join('accounts', 'purchase_challans.accountid', '=', 'accounts.id')
-        ->select('purchase_challans.*', 'accounts.name as account_name', 'accounts.gstno as gstno', 'accounts.city as city', 'accounts.pincode as pincode',)
-        ->where('purchase_challans.id', $id)->first();
-        $products = unserialize($purchaseChallan->productarray);
-        return view('views-files/purchasechallan')->with(['purchaseChallan' => $purchaseChallan, 'products' => $products]);
-    }
-
-    public function purchaseChallanDelete($id){
-        $PurchaseChallans = PurchaseChallan::where('id', $id)->update(['is_deleted' => 0]);
-        return redirect('/show-purchasechallan')->with('success', 'Purchase Challan has been Successfuly Deleted.');
-    }
+    
 }

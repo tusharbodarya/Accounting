@@ -45,11 +45,11 @@
             <p style="font-size: inherit;font-weight: bolder;margin-top: 15px;"><span>Against advance / full / part payment of our Bill No</span><span style="padding-left: 20%;"> Dt :</span></p>
         </div>
 		<div style="border-top: 2px solid;width: 100%;padding-bottom: 15%;">
-			<?php
+			{{-- <?php
              echo '<pre>';
                 print_r($transaction);
                 die;
-                 ?>
+                 ?> --}}
 		</div>
         <div style="padding: 15px;">
             <span style="font-size: smaller;">This receipt is valid subject to realization of cheque</span>
