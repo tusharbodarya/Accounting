@@ -48,7 +48,8 @@
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>Order Id</th>
+                                <th>Challan No.</th>
+                                <th>Qty</th>
                                 <th>Account Name</th>
                                 <th>Order Date</th>
                                 <th>Order Due Date</th>
@@ -59,16 +60,32 @@
 
 
                         <tbody>
+                            <?php $ammount = 0; $qty = 0; ?>
                             @foreach ($purchaseinvoices as $purchaseinvoice)
+                                <?php 
+                                    $ammount += str_replace(',','',$purchaseinvoice->total);
+                                    $products = unserialize($purchaseinvoice->productarray);
+                                 ?>
                                 <tr>
                                     <td>{{ $purchaseinvoice->id }}</td>
-                                    <td>{{ $purchaseinvoice->orderid }}</td>
+                                    <td>{{ $purchaseinvoice->challannum }}</td>
+                                    <td>
+                                        @foreach ($products as $p)
+                                        <?php
+                                        $product = explode("-",$p['product_name']); 
+                                        $qty += $p['product_qty'];
+                                        echo $p['product_qty'].' - '.$product[0].'<br>';
+                                        ?>
+                                        @endforeach
+                                    </td>
                                     <td>{{ $purchaseinvoice->account_name }}</td>
                                     <td>{{ $purchaseinvoice->orderdate }}</td>
                                     <td>{{ $purchaseinvoice->orderduedate }}</td>
                                     <td>{{ $purchaseinvoice->total }}</td>
                                     <td>
-                                        <a href="purchaseinvoice/{{ $purchaseinvoice->id }}"class="btn btn-success btn-xs delete-object" title="Show"><i class="mdi mdi-eye"></i></a>&nbsp;
+                                        <a href="purchaseinvoice/{{ $purchaseinvoice->id }}"
+                                            class="btn btn-success btn-xs delete-object" title="Show"><i
+                                                class="mdi mdi-eye"></i></a>&nbsp;
                                         <a href="/purchaseinvoice/{{ $purchaseinvoice->id }}/edit"
                                             class="btn btn-warning btn-xs"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
                                         <a href="purchaseinvoice-delete/{{ $purchaseinvoice->id }}"
@@ -77,8 +94,17 @@
                                     </td>
                                 </tr>
                             @endforeach
-
                         </tbody>
+                        <tfoot>
+                            <td></td>
+                            <td></td>
+                            <td>{{ $qty }}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>{{ $ammount }}</td>
+                            <td></td>
+                        </tfoot>
                     </table>
                 </div>
             </div>

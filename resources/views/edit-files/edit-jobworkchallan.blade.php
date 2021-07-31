@@ -156,7 +156,6 @@
                                         <label for="taxformat" class="caption">Tax </label>
                                         <select class="form-control round" onchange="changeTaxFormat(this.value)"
                                             name="taxformat" id="taxformat">
-
                                             <option value="gst" data-tformat="cgst">CGST + SGST</option>
                                             <option value="igst" data-tformat="igst">IGST</option>
                                             <option value="other">other</option>
@@ -166,7 +165,8 @@
                                         <div class="form-group">
                                             <label for="discountFormat" class="caption"> Discount</label>
                                             <select class="form-control" onchange="changeDiscountFormat(this.value)"
-                                                name="discountFormat" id="discountFormat">
+                                                name="discountFormat" id="discountFormat" required>
+                                            <option value="" hidden>Select Discount type</option>
                                                 <option value="b_p"> % Discount Before TAX</option>
                                                 <option value="bflat">Flat Discount Before TAX</option>
                                                 <option value="%"> % Discount After TAX</option>

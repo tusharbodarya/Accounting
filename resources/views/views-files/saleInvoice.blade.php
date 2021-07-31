@@ -35,15 +35,15 @@
 		</div>
 		<div style="display: flex;">
 			<div style="width: 65%;border-right: 2px solid;">
-				<p>M/S : {{ $saleInvoice->account_name }}</p>
+				<p>M/S : <b>{{ $saleInvoice->account_name }}</b></p>
 				<p>{{ $saleInvoice->city }} - {{ $saleInvoice->pincode }}</p>
-				<p>GST NO : {{ $saleInvoice->gstno }}</p>
+				<p>GST NO : <b>{{ $saleInvoice->gstno }}</b></p>
 				<p style="clear: both;margin-bottom: 0rem;"></p>
 			</div>
 			<div style="width: 35%;border-bottom: 2px solid;background-color: #f2f2f2;margin-bottom: 40px;">
-				<p style="margin-bottom: 0rem;">Bill No : #{{ $saleInvoice->orderid }}</p>
+				<p style="margin-bottom: 0rem;">Bill No : <b>{{ $saleInvoice->orderid }}</b></p>
 				<p style="margin-bottom: 0rem;">Challen Date : {{ date_format(date_create($saleInvoice->created_at),"d/m/Y") }} </p>
-				<p style="margin-bottom: 0rem;">Challen No : #{{ $saleInvoice->challannum }}</p>
+				<p style="margin-bottom: 0rem;">Challen No : <b>{{ $saleInvoice->challannum }}</b></p>
 				<p style="clear: both;margin-bottom: 0rem;"></p>
 			</div>
 		</div>

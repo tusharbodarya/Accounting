@@ -35,15 +35,15 @@
 		</div>
 		<div style="display: flex;">
 			<div style="width: 65%;border-right: 2px solid;">
-				<p>M/S : {{ $purchaseReturn->account_name }}</p>
-				<p>{{ $purchaseReturn->city }} - {{ $purchaseReturn->pincode }}</p>
-				<p>GST NO : {{ $purchaseReturn->gstno }}</p>
+				<p>M/S : <b>{{ $purchaseReturn->account_name }}</b></p>
+				<p><b>{{ $purchaseReturn->city }} - {{ $purchaseReturn->pincode }}</b></p>
+				<p>GST NO : <b>{{ $purchaseReturn->gstno }}</b></p>
 				<p style="clear: both;margin-bottom: 0rem;"></p>
 			</div>
 			<div style="width: 35%;border-bottom: 2px solid;background-color: #f2f2f2;margin-bottom: 40px;">
-				<p style="margin-bottom: 0rem;">Bill No : #{{ $purchaseReturn->orderid }}</p>
+				<p style="margin-bottom: 0rem;">Bill No : <b>{{ $purchaseReturn->orderid }}</b></p>
 				<p style="margin-bottom: 0rem;">Challen Date : {{ date_format(date_create($purchaseReturn->created_at),"d/m/Y") }} </p>
-				<p style="margin-bottom: 0rem;">Challen No : #{{ $purchaseReturn->challannum }}</p>
+				<p style="margin-bottom: 0rem;">Challen No : <b>{{ $purchaseReturn->challannum }}</b></p>
 				<p style="clear: both;margin-bottom: 0rem;"></p>
 			</div>
 		</div>
